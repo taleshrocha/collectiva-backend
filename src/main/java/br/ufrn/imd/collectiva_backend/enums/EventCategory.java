@@ -1,13 +1,13 @@
 package br.ufrn.imd.collectiva_backend.enums;
 
-public enum FormatType {
-    PRESENTIAL("Presencial"),
-    HYBRID("Híbrido"),
-    REMOTE("Remoto");
+public enum EventCategory {
+    SHOW("Show"),
+    LECTURE("Palestra"),
+    PARTY("Festa");
 
     private final String name;
 
-    FormatType(String name) {
+    EventCategory(String name) {
         this.name = name;
     }
 
