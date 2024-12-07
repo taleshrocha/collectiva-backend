@@ -33,7 +33,8 @@ public class SecurityConfig {
             "/v1/auth/**",
             "/v1/user-info/**",
             "/v1/organization/**",
-            "/v1/files/download/**",
+            "/v1/resource/**",
+            "/v1/file/**",
     };
 
     @Bean

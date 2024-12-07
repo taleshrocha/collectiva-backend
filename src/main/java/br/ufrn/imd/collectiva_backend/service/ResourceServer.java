@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class OrganizationService implements GenericService<Organization, OrganizationDTO> {
+public class ResourceServer implements GenericService<Organization, OrganizationDTO> {
 
     private final OrganizationRepository organizationRepository;
 
     private final OrganizationMapper mapper;
 
-    public OrganizationService(OrganizationRepository organizationRepository, OrganizationMapper mapper) {
+    public ResourceServer(OrganizationRepository organizationRepository, OrganizationMapper mapper) {
         this.organizationRepository = organizationRepository;
         this.mapper = mapper;
     }

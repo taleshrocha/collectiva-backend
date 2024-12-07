@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/files")
+@RequestMapping("/v1/file")
 @Validated
 public class FileController {
 

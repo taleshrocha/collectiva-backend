@@ -2,6 +2,7 @@ package br.ufrn.imd.collectiva_backend.dto;
 
 public record ResourceDTO(
         Long id,
+        String name,
         String description,
         String log,
         Long bannerId
