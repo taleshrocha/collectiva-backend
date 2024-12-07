@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
-import java.util.List;
-
 @Audited
 @Entity
 @SQLRestriction("active = true")
@@ -24,7 +22,8 @@ public class Resource extends BaseEntity {
 
     private Long bannerId;
 
-    // TODO adicionar o evento em que está alocado
+    @ManyToOne
+    private Event event;
 
     public Resource() {
     }
@@ -69,5 +68,13 @@ public class Resource extends BaseEntity {
 
     public void setBannerId(Long bannerId) {
         this.bannerId = bannerId;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }

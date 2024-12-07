@@ -5,7 +5,8 @@ public record ResourceDTO(
         String name,
         String description,
         String log,
-        Long bannerId
+        Long bannerId,
+        EventDTO event
 ) implements EntityDTO {
     @Override
     public EntityDTO toResponse() {
