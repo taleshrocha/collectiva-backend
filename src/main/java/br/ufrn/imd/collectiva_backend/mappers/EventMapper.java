@@ -3,6 +3,7 @@ package br.ufrn.imd.collectiva_backend.mappers;
 import br.ufrn.imd.collectiva_backend.dto.EventDTO;
 import br.ufrn.imd.collectiva_backend.model.Event;
 import br.ufrn.imd.collectiva_backend.utils.Parser;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class EventMapper implements DTOMapper<Event, EventDTO> {
     private final ResourceMapper resourceMapper;
 
-    public EventMapper(ResourceMapper resourceMapper) {
+    public EventMapper(@Lazy ResourceMapper resourceMapper) {
         this.resourceMapper = resourceMapper;
     }
 
