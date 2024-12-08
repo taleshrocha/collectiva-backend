@@ -23,7 +23,8 @@ public class Event extends BaseEntity {
 
     private String category;
 
-    private LocalDateTime date;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 
     private String description;
 
@@ -69,12 +70,20 @@ public class Event extends BaseEntity {
         this.category = category;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getStartDate() {
+        return startDate;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
     }
 
     public String getDescription() {

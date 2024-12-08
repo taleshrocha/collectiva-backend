@@ -22,7 +22,8 @@ public class EventMapper implements DTOMapper<Event, EventDTO> {
                 entity.getName(),
                 entity.getLocation(),
                 entity.getCategory(),
-                entity.getDate(),
+                entity.getStartDate(),
+                entity.getEndDate(),
                 entity.getDescription(),
                 entity.getBannerId(),
                 entity.getResources() != null ? resourceMapper.toDTO(entity.getResources()) : null

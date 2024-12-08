@@ -8,7 +8,8 @@ public record EventDTO(
         String name,
         String location,
         String category,
-        LocalDateTime date,
+        LocalDateTime startDate,
+        LocalDateTime endDate,
         String description,
         Long bannerId,
         List<ResourceDTO> resources
