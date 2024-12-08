@@ -5,6 +5,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Audited
@@ -30,8 +31,10 @@ public class Event extends BaseEntity {
 
     private Long bannerId;
 
+    private Boolean isFinished = false;
+
     @OneToMany(mappedBy = "event")
-    private List<Resource> resources;
+    private List<Resource> resources = Collections.emptyList();
 
     public Event() {
     }
@@ -108,5 +111,13 @@ public class Event extends BaseEntity {
 
     public void setResources(List<Resource> resources) {
         this.resources = resources;
+    }
+
+    public Boolean getIsFinished() {
+        return isFinished;
+    }
+
+    public void setIsFinished(Boolean finished) {
+        isFinished = finished;
     }
 }

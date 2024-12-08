@@ -12,7 +12,8 @@ public record EventDTO(
         LocalDateTime endDate,
         String description,
         Long bannerId,
-        List<ResourceDTO> resources
+        List<ResourceDTO> resources,
+        Boolean isFinished
 ) implements EntityDTO {
     @Override
     public EntityDTO toResponse() {

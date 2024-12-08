@@ -4,14 +4,18 @@ import br.ufrn.imd.collectiva_backend.dto.EventDTO;
 import br.ufrn.imd.collectiva_backend.mappers.DTOMapper;
 import br.ufrn.imd.collectiva_backend.mappers.EventMapper;
 import br.ufrn.imd.collectiva_backend.model.Event;
+import br.ufrn.imd.collectiva_backend.model.Resource;
 import br.ufrn.imd.collectiva_backend.repository.EventRepository;
 import br.ufrn.imd.collectiva_backend.repository.GenericRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @Transactional
@@ -21,9 +25,12 @@ public class EventService implements GenericService<Event, EventDTO> {
 
     private final EventMapper mapper;
 
-    public EventService(EventRepository repository, EventMapper mapper) {
+    private final ResourceService resourceService;
+
+    public EventService(EventRepository repository, EventMapper mapper, @Lazy ResourceService resourceService) {
         this.repository = repository;
         this.mapper = mapper;
+        this.resourceService = resourceService;
     }
 
     @Override
@@ -42,5 +49,40 @@ public class EventService implements GenericService<Event, EventDTO> {
         return repository.filterEventsByParams(queryEvent, name, location, category,
                 startDate != null ? startDate.atTime(0, 0) : null,
                 endDate != null ? endDate.atTime(23, 59) : null, description, pageable).map(mapper::toDTO);
+    }
+
+    public void addResouceByEventId(Long id, Resource resource) {
+        Event event = findEntityById(id);
+
+        event.getResources().add(resource);
+
+        getRepository().save(event);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Event entity = findEntityById(id);
+
+        freeResources(entity);
+
+        entity.setActive(false);
+        getRepository().save(entity);
+    }
+
+    public EventDTO finishById(Long id) {
+        Event entity = findEntityById(id);
+
+        freeResources(entity);
+
+        entity.setResources(Collections.emptyList());
+
+        entity.setIsFinished(true);
+        return mapper.toDTO(getRepository().save(entity));
+    }
+
+    private void freeResources(Event event) {
+        List<Resource> eventResources = event.getResources().stream().peek((resource -> resource.setEvent(null))).toList();
+
+        resourceService.saveAll(eventResources);
     }
 }

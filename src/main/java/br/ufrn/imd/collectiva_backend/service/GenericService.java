@@ -1,14 +1,15 @@
 package br.ufrn.imd.collectiva_backend.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-
 import br.ufrn.imd.collectiva_backend.mappers.DTOMapper;
 import br.ufrn.imd.collectiva_backend.model.BaseEntity;
 import br.ufrn.imd.collectiva_backend.repository.GenericRepository;
 import br.ufrn.imd.collectiva_backend.utils.exception.ResourceNotFoundException;
 import br.ufrn.imd.collectiva_backend.utils.validators.GenericEntityValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * A generic service interface defining common operations for entities in the
@@ -57,6 +58,10 @@ public interface GenericService<E extends BaseEntity, DTO> {
         E entity = getRepository().findById(id).orElseThrow(() -> new ResourceNotFoundException("Id not found: " + id));
 
         return getDtoMapper().toDTO(entity);
+    }
+
+    default E findEntityById(Long id) {
+        return getRepository().findById(id).orElseThrow(() -> new ResourceNotFoundException("Id não encontrado: " + id));
     }
 
     /**
@@ -119,4 +124,7 @@ public interface GenericService<E extends BaseEntity, DTO> {
         GenericEntityValidator.validate(entity);
     }
 
+    default List<E> saveAll(List<E> entities) {
+        return getRepository().saveAll(entities);
+    }
 }

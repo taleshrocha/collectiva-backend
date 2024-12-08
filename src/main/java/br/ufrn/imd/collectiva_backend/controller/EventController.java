@@ -9,16 +9,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/v1/event")
@@ -29,7 +24,6 @@ public class EventController extends GenericController<Event, EventDTO, EventSer
         super(service);
     }
 
-    //@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
     @GetMapping("/filter")
     public ResponseEntity<ApiResponseDTO<Page<EventDTO>>> filter(
             @RequestParam(required = false) String queryEvent,
@@ -64,8 +58,18 @@ public class EventController extends GenericController<Event, EventDTO, EventSer
 
         return ResponseEntity.ok(new ApiResponseDTO<>(
                 true,
-                "Sucesso na listagem",
+                "Eventos filtrados com sucesso.",
                 pageList,
+                null));
+    }
+
+    @PutMapping("/finish/{id}")
+    public ResponseEntity<ApiResponseDTO<EventDTO>> finish(@PathVariable Long id) {
+
+        return ResponseEntity.ok(new ApiResponseDTO<>(
+                true,
+                "Evento finalizado com sucesso.",
+                service.finishById(id),
                 null));
     }
 }

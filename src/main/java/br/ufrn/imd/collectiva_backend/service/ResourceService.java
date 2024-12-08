@@ -9,6 +9,8 @@ import br.ufrn.imd.collectiva_backend.repository.ResourceRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ResourceService implements GenericService<Resource, ResourceDTO> {
@@ -17,9 +19,12 @@ public class ResourceService implements GenericService<Resource, ResourceDTO> {
 
     private final ResourceMapper mapper;
 
-    public ResourceService(ResourceRepository repository, ResourceMapper mapper) {
+    private final EventService eventService;
+
+    public ResourceService(ResourceRepository repository, ResourceMapper mapper, EventService eventService) {
         this.repository = repository;
         this.mapper = mapper;
+        this.eventService = eventService;
     }
 
     @Override
@@ -31,4 +36,16 @@ public class ResourceService implements GenericService<Resource, ResourceDTO> {
     public DTOMapper<Resource, ResourceDTO> getDtoMapper() {
         return this.mapper;
     }
+
+//    @Override
+//    public ResourceDTO create(ResourceDTO resourceDTO) {
+//        Resource entity = getDtoMapper().toEntity(resourceDTO);
+//        validateBeforeSave(entity);
+//
+//        if (resourceDTO.event() != null) {
+//            eventService.addResouceByEventId(entity.getEvent().getId(), entity);
+//        }
+//
+//        return getDtoMapper().toDTO(getRepository().save(entity));
+//    }
 }
