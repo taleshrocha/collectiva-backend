@@ -11,8 +11,11 @@ import java.util.List;
 public class ResourceMapper implements DTOMapper<Resource, ResourceDTO> {
     private final EventMapper eventMapper;
 
-    public ResourceMapper(EventMapper eventMapper) {
+    private final ResourceHistoryMapper resourceHistoryMapper;
+
+    public ResourceMapper(EventMapper eventMapper, ResourceHistoryMapper resourceHistoryMapper) {
         this.eventMapper = eventMapper;
+        this.resourceHistoryMapper = resourceHistoryMapper;
     }
 
     @Override
@@ -20,17 +23,18 @@ public class ResourceMapper implements DTOMapper<Resource, ResourceDTO> {
         return new ResourceDTO(entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
-                entity.getLog(),
+                entity.getResourceHistory() != null ? resourceHistoryMapper.toDTO(entity.getResourceHistory()) : null,
                 entity.getBannerId(),
                 entity.getEvent() != null ? eventMapper.toDTOWithoutResource(entity.getEvent()) : null
         );
     }
 
     public ResourceDTO toDTOWithoutEvent(Resource entity) {
-        return new ResourceDTO(entity.getId(),
+        return new ResourceDTO(
+                entity.getId(),
                 entity.getName(),
                 entity.getDescription(),
-                entity.getLog(),
+                entity.getResourceHistory() != null ? resourceHistoryMapper.toDTO(entity.getResourceHistory()) : null,
                 entity.getBannerId(),
                 null
         );
@@ -43,15 +47,15 @@ public class ResourceMapper implements DTOMapper<Resource, ResourceDTO> {
     @Override
     public Resource toEntity(ResourceDTO entityDTO) {
 
-        Resource resource = new Resource();
+        Resource entity = new Resource();
 
-        resource.setName(entityDTO.name());
-        resource.setDescription(entityDTO.description());
-        resource.setLog(entityDTO.log());
-        resource.setBannerId(entityDTO.bannerId());
-        resource.setEvent(entityDTO.event() != null ? eventMapper.toEntity(entityDTO.event()) : null);
+        entity.setId(entityDTO.id());
+        entity.setName(entityDTO.name());
+        entity.setDescription(entityDTO.description());
+        entity.setResourceHistory(entityDTO.resourceHistory() != null ? resourceHistoryMapper.toEntity(entityDTO.resourceHistory()) : null);
+        entity.setBannerId(entityDTO.bannerId());
+        entity.setEvent(entityDTO.event() != null ? eventMapper.toEntity(entityDTO.event()) : null);
 
-        return resource;
-
+        return entity;
     }
 }

@@ -1,14 +1,11 @@
 package br.ufrn.imd.collectiva_backend.dto;
 
-import java.util.List;
+import java.time.ZonedDateTime;
 
-public record ResourceDTO(
+public record ResourceHistoryDTO(
         Long id,
-        String name,
         String description,
-        List<ResourceHistoryDTO> resourceHistory,
-        Long bannerId,
-        EventDTO event
+        ZonedDateTime createdAt
 ) implements EntityDTO {
     @Override
     public EntityDTO toResponse() {

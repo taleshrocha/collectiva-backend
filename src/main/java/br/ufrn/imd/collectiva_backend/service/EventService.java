@@ -5,6 +5,7 @@ import br.ufrn.imd.collectiva_backend.mappers.DTOMapper;
 import br.ufrn.imd.collectiva_backend.mappers.EventMapper;
 import br.ufrn.imd.collectiva_backend.model.Event;
 import br.ufrn.imd.collectiva_backend.model.Resource;
+import br.ufrn.imd.collectiva_backend.model.ResourceHistory;
 import br.ufrn.imd.collectiva_backend.repository.EventRepository;
 import br.ufrn.imd.collectiva_backend.repository.GenericRepository;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,12 +45,9 @@ public class EventService implements GenericService<Event, EventDTO> {
         return this.mapper;
     }
 
-    public Page<EventDTO> filter(String queryEvent, String name, String location, String category,
-                                 LocalDate startDate, LocalDate endDate, String description, Pageable pageable) {
+    public Page<EventDTO> filter(String queryEvent, String name, String location, String category, LocalDate startDate, LocalDate endDate, String description, Pageable pageable) {
 
-        return repository.filterEventsByParams(queryEvent, name, location, category,
-                startDate != null ? startDate.atTime(0, 0) : null,
-                endDate != null ? endDate.atTime(23, 59) : null, description, pageable).map(mapper::toDTO);
+        return repository.filterEventsByParams(queryEvent, name, location, category, startDate != null ? startDate.atTime(0, 0) : null, endDate != null ? endDate.atTime(23, 59) : null, description, pageable).map(mapper::toDTO);
     }
 
     public void addResouceByEventId(Long id, Resource resource) {
@@ -80,9 +79,47 @@ public class EventService implements GenericService<Event, EventDTO> {
         return mapper.toDTO(getRepository().save(entity));
     }
 
-    private void freeResources(Event event) {
-        List<Resource> eventResources = event.getResources().stream().peek((resource -> resource.setEvent(null))).toList();
+    private void freeResources(Event entity) {
+        if (entity.getResources() != null && !entity.getResources().isEmpty()) {
 
-        resourceService.saveAll(eventResources);
+            List<Resource> eventResources = entity.getResources().stream().peek((resource -> {
+                ResourceHistory resourceHistory = new ResourceHistory();
+                resourceHistory.setCreatedAt(ZonedDateTime.now());
+                resourceHistory.setDescription("Removido do evento: " + entity.getName() + ".");
+                resource.getResourceHistory().add(resourceHistory);
+                resource.setEvent(null);
+            })).toList();
+
+            resourceService.saveAll(eventResources);
+        }
+    }
+
+    private void allocateResources(Event entity) {
+        if (entity.getResources() != null && !entity.getResources().isEmpty()) {
+
+            List<Resource> eventResources = entity.getResources().stream().map((resource -> {
+                resource = resourceService.findEntityById(resource.getId());
+
+                ResourceHistory newResourceHistory = new ResourceHistory();
+                newResourceHistory.setCreatedAt(ZonedDateTime.now());
+                newResourceHistory.setDescription("Alocado para o evento: " + entity.getName() + ".");
+
+                resource.getResourceHistory().add(newResourceHistory);
+
+                return resource;
+            })).toList();
+
+            resourceService.saveAll(eventResources);
+        }
+    }
+
+    @Override
+    public EventDTO create(EventDTO eventDTO) {
+        Event entity = getDtoMapper().toEntity(eventDTO);
+        validateBeforeSave(entity);
+
+        allocateResources(entity);
+
+        return getDtoMapper().toDTO(getRepository().save(entity));
     }
 }

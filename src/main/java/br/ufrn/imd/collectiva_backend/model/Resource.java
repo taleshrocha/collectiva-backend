@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
+import java.util.Collections;
+import java.util.List;
+
 @Audited
 @Entity
 @SQLRestriction("active = true")
@@ -18,7 +21,8 @@ public class Resource extends BaseEntity {
 
     private String description;
 
-    private String log;
+    @OneToMany
+    private List<ResourceHistory> resourceHistory = Collections.emptyList();
 
     private Long bannerId;
 
@@ -54,12 +58,12 @@ public class Resource extends BaseEntity {
         this.description = description;
     }
 
-    public String getLog() {
-        return log;
+    public List<ResourceHistory> getResourceHistory() {
+        return resourceHistory;
     }
 
-    public void setLog(String log) {
-        this.log = log;
+    public void setResourceHistory(List<ResourceHistory> resourceHistory) {
+        this.resourceHistory = resourceHistory;
     }
 
     public Long getBannerId() {

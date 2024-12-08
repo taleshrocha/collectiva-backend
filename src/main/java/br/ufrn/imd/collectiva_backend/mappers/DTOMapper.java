@@ -38,4 +38,8 @@ public interface DTOMapper<E, DTO> {
      */
     E toEntity(DTO dto);
 
+    default List<E> toEntity(List<DTO> entityDTO) {
+        return entityDTO.stream().map(this::toEntity).toList();
+    }
+
 }

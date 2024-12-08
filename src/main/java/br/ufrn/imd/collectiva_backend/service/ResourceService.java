@@ -16,15 +16,15 @@ import java.util.List;
 public class ResourceService implements GenericService<Resource, ResourceDTO> {
 
     private final ResourceRepository repository;
-
     private final ResourceMapper mapper;
-
     private final EventService eventService;
+    private final ResourceHistoryService resourceHistoryService;
 
-    public ResourceService(ResourceRepository repository, ResourceMapper mapper, EventService eventService) {
+    public ResourceService(ResourceRepository repository, ResourceMapper mapper, EventService eventService, ResourceHistoryService resourceHistoryService) {
         this.repository = repository;
         this.mapper = mapper;
         this.eventService = eventService;
+        this.resourceHistoryService = resourceHistoryService;
     }
 
     @Override
@@ -35,6 +35,15 @@ public class ResourceService implements GenericService<Resource, ResourceDTO> {
     @Override
     public DTOMapper<Resource, ResourceDTO> getDtoMapper() {
         return this.mapper;
+    }
+
+    @Override
+    public List<Resource> saveAll(List<Resource> entities) {
+        entities.forEach(resource -> {
+            resourceHistoryService.saveAll(resource.getResourceHistory());
+        });
+
+        return GenericService.super.saveAll(entities);
     }
 
 //    @Override
