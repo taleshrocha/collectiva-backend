@@ -12,16 +12,17 @@ public interface EventRepository extends GenericRepository<Event> {
 
     @Query("""
             SELECT e FROM Event e
-            WHERE (:queryEvent IS NULL OR :queryEvent = '' OR (e.name ILIKE CONCAT('%', :queryEvent, '%') OR CAST(e.id AS string) = :queryEvent))
-            AND (:name IS NULL OR e.name = :name)
-            AND (:location IS NULL OR e.location = :location)
-            AND (:category IS NULL OR e.category = :category)
-            AND (:description IS NULL OR e.description = :description)
+            WHERE (:queryEvent IS NULL OR :queryEvent = '' OR
+                (e.name ILIKE CONCAT('%', :queryEvent, '%') OR CAST(e.id AS string) = :queryEvent))
+            AND (:name IS NULL OR :name = '' OR e.name ILIKE CONCAT('%', :name, '%'))
+            AND (:location IS NULL OR :location = '' OR e.location ILIKE CONCAT('%', :location, '%'))
+            AND (:category IS NULL OR :category = '' OR e.category ILIKE CONCAT('%', :category, '%'))
+            AND (:description IS NULL OR :description = '' OR e.description ILIKE CONCAT('%', :description, '%'))
             AND (
                 (cast(:startDate as date) IS NULL OR e.startDate >= :startDate)
                 AND (cast(:endDate as date) IS NULL OR e.endDate <= :endDate)
             )
             """)
-    Page<Event> filterEventsByParams(String queryEvent, String name, String location, String category, LocalDateTime startDate,
-                                     LocalDateTime endDate, String description, Pageable pageable);
+    Page<Event> filterEventsByParams(String queryEvent, String name, String location, String category,
+                                     LocalDateTime startDate, LocalDateTime endDate, String description, Pageable pageable);
 }

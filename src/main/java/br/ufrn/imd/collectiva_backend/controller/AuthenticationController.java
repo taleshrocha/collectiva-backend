@@ -1,9 +1,6 @@
 package br.ufrn.imd.collectiva_backend.controller;
 
-import br.ufrn.imd.collectiva_backend.dto.ApiResponseDTO;
-import br.ufrn.imd.collectiva_backend.dto.AuthenticationDTO;
-import br.ufrn.imd.collectiva_backend.dto.LoginResponseDTO;
-import br.ufrn.imd.collectiva_backend.dto.RefreshTokenDTO;
+import br.ufrn.imd.collectiva_backend.dto.*;
 import br.ufrn.imd.collectiva_backend.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -24,7 +21,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     @Operation(tags = "Client", summary = "Authenticate the user")
-    public ResponseEntity<ApiResponseDTO<LoginResponseDTO>> authenticate(@RequestBody @Valid AuthenticationDTO data) {
+    public ResponseEntity<ApiResponseDTO<UserInfoDTO>> authenticate(@RequestBody @Valid AuthenticationDTO data) {
         return authenticationService.authenticate(data);
     }
 

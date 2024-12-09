@@ -48,7 +48,7 @@ public class AuthenticationService {
         this.userInfoRepository = userInfoRepository;
     }
 
-    public ResponseEntity<ApiResponseDTO<LoginResponseDTO>> authenticate(AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<ApiResponseDTO<UserInfoDTO>> authenticate(AuthenticationDTO authenticationDTO) {
         UserDetails savedUser;
         try {
             savedUser = userInfoService.loadUserByUsername(authenticationDTO.email());
@@ -68,18 +68,19 @@ public class AuthenticationService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserInfo user = (UserInfo) authentication.getPrincipal();
-        String accessToken = jwtService.generateAccessToken(user);
-        String newRefreshToken = jwtService.generateRefreshToken(user);
 
-        if (refreshTokenRepository.existsByUser(user)) {
-            refreshTokenRepository.deleteAllByUser(user.getId());
-        }
+//        String accessToken = jwtService.generateAccessToken(user);
+//        String newRefreshToken = jwtService.generateRefreshToken(user);
+//
+//        if (refreshTokenRepository.existsByUser(user)) {
+//            refreshTokenRepository.deleteAllByUser(user.getId());
+//        }
+//
+//        refreshTokenRepository.save(new RefreshToken(newRefreshToken, user));
+//
+//        LoginResponseDTO loginResponse = new LoginResponseDTO(accessToken, newRefreshToken);
 
-        refreshTokenRepository.save(new RefreshToken(newRefreshToken, user));
-
-        LoginResponseDTO loginResponse = new LoginResponseDTO(accessToken, newRefreshToken);
-
-        return ResponseEntity.ok().body(new ApiResponseDTO<>(true, "Usuário logado com sucesso!", loginResponse, null));
+        return ResponseEntity.ok().body(new ApiResponseDTO<>(true, "Usuário logado com sucesso!", userInfoMapper.toDTO(user), null));
     }
 
     public UserInfoDTO signup(AuthenticationDTO authenticationDTO) {
